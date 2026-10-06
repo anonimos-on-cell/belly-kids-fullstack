@@ -32,6 +32,14 @@ app.get('/', (req, res) => {
   res.json({ status: 'API Ballykids em execução' });
 });
 
+app.use(((error, _req, res, next) => {
+  console.error('Erro ao processar solicitação:', error);
+  if (res.headersSent) {
+    return next(error);
+  }
+  return res.status(500).json({ message: 'Erro interno ao processar a solicitação.' });
+}) satisfies express.ErrorRequestHandler);
+
 app.listen(PORT, () => {
   console.log(`Servidor a rodar em http://localhost:${PORT}`);
 });
